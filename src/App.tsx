@@ -2,11 +2,8 @@ import { Session } from "@supabase/supabase-js"
 import { useState, useEffect } from "react"
 import Auth from './components/Auth'
 import SaveWeight from "./components/SaveWeight"
+import GetWeights from "./components/GetWeights"
 import { supabase } from './helpers/supabase'
-
-interface SessionData {
-  session: Session
-}
 
 export default function App() {
 
@@ -27,8 +24,12 @@ export default function App() {
       {!session ?
         <Auth />
         :
-        <SaveWeight />
+        <div>
+          <SaveWeight session={session} />
+          <GetWeights session={session} />
+        </div>
       }
+
     </div>
   )
 }

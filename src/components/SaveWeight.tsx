@@ -1,8 +1,9 @@
+import { Session } from "@supabase/supabase-js";
 import { useState } from "react";
 import { supabase } from '../helpers/supabase'
 
 
-function SaveWeight() {
+function SaveWeight({ session }: { session: Session }) {
     const [userWeight, setUserWeight] = useState(0)
     const [userDate, setUserDate] = useState('');
 
@@ -16,20 +17,18 @@ function SaveWeight() {
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        pushImageDB();
+        pushWeightDB();
     }
 
-    const pushImageDB = async () => {
+    const pushWeightDB = async () => {
         try {
             const { data, error } = await supabase
                 .from('weight-tracker')
                 .insert([
-                    { weight: userWeight, date: userDate }
+                    { weight: userWeight, date: userDate, userID: session.user.id }
                 ])
         } catch (error) {
             console.log(error)
-        } finally {
-            console.log('complete')
         }
     }
 
