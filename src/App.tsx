@@ -19,12 +19,20 @@ export default function App() {
     })
   }, [])
 
+  async function signOut() {
+    const { error } = await supabase.auth.signOut()
+  }
+
+
   return (
     <div className="container">
       {!session ?
         <Auth />
         :
         <div>
+          <button onClick={signOut} >
+            LogOut
+          </button>
           <SaveWeight session={session} />
           <GetWeights session={session} />
         </div>

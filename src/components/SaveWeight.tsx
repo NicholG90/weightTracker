@@ -18,6 +18,7 @@ function SaveWeight({ session }: { session: Session }) {
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         pushWeightDB();
+        alert('Thanks!')
     }
 
     const pushWeightDB = async () => {
@@ -35,9 +36,9 @@ function SaveWeight({ session }: { session: Session }) {
     return (
         <form onSubmit={handleSubmit}>
             <label htmlFor="weightInput"></label>
-            <input type="number" step=".1" id="weightInput" onChange={handleWeightChange} required />
+            <input type="number" step=".1" id="weightInput" onChange={handleWeightChange} value={userWeight} required />
             <label htmlFor="dateSelect"></label>
-            <input type="date" id="dateSelect" onChange={handleDateChange} required />
+            <input type="date" id="dateSelect" onChange={handleDateChange} value={userDate} required />
             <button>Submit</button>
         </form>
 
