@@ -1,26 +1,34 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Session } from "@supabase/supabase-js"
+import { useState, useEffect } from "react"
+import Auth from './components/Auth'
+import SaveWeight from "./components/SaveWeight"
+import { supabase } from './helpers/supabase'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+interface SessionData {
+  session: Session
 }
 
-export default App;
+export default function App() {
+
+  const [session, setSession] = useState<Session | null>(null)
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session)
+    })
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+    })
+  }, [])
+
+  return (
+    <div className="container">
+      {!session ?
+        <Auth />
+        :
+        <SaveWeight />
+      }
+    </div>
+  )
+}
