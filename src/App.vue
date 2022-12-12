@@ -28,17 +28,32 @@ async function signOut() {
 </script>
 
 <template>
-  <header>
-    <div class="wrapper">
-      <Auth />
-      <button @click="logData">Console Log Session</button>
-      <button @click="signOut">Log Out</button>
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/saveweight">Save Weight</RouterLink>
-        <RouterLink to="/showweight">Show Weight History</RouterLink>
-      </nav>
-    </div>
-  </header>
-  <RouterView />
+  <v-app id="inspire">
+    <v-app-bar class="px-3" color="white" flat density="compact">
+      <v-tabs centered color="grey-darken-2">
+        <v-tab>
+          <RouterLink to="/">Home</RouterLink>
+        </v-tab>
+        <v-tab>
+          <RouterLink to="/saveweight">Save Weight</RouterLink>
+        </v-tab>
+        <v-tab>
+          <RouterLink to="/showweight">Show Weight History</RouterLink>
+        </v-tab>
+        <v-tab>
+          <Auth />
+        </v-tab>
+        <v-tab>
+          <button @click="signOut">Log Out</button>
+        </v-tab>
+      </v-tabs>
+      <v-spacer></v-spacer>
+      <v-avatar class="hidden-sm-and-down" color="grey darken-1 shrink" size="32"></v-avatar>
+    </v-app-bar>
+    <v-main class="grey lighten-3">
+      <v-container>
+        <RouterView />
+      </v-container>
+    </v-main>
+  </v-app>
 </template>

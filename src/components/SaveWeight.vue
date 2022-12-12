@@ -27,11 +27,11 @@ const pushWeightDB = async () => {
 </script>
 
 <template>
-    <form @submit.prevent="handleSubmit">
+    <v-form @submit.prevent="handleSubmit" ref="form">
         <label htmlFor="weightInput"></label>
         <input type="number" step=".1" id="weightInput" v-model="userWeight" required />
         <label htmlFor="dateSelect"></label>
         <input type="date" id="dateSelect" v-model="userDate" required />
-        <button>Submit</button>
-    </form>
+        <v-btn type="submit" color="success">Submit</v-btn>
+    </v-form>
 </template>
