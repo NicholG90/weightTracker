@@ -22,6 +22,7 @@
     "vuetify": "^3.0.4"
   },
   "devDependencies": {
+    "@mdi/font": "^7.1.96",
     "@rushstack/eslint-patch": "^1.1.4",
     "@types/jsdom": "^20.0.0",
     "@types/node": "^16.11.56",

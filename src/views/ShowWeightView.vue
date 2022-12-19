@@ -2,7 +2,7 @@
 import GetWeights from '../components/GetWeights.vue';
 </script>
 <template>
-    <div>
-        <GetWeights />
-    </div>
+	<div>
+		<GetWeights />
+	</div>
 </template>

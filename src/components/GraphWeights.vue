@@ -1,55 +1,37 @@
 <script lang="ts">
 import { store } from '../stores/store'
-import { ref, watchEffect } from "vue";
 import { Line } from 'vue-chartjs'
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
-
-ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
-
-let weightData: any = null
-let userWeights: any
-let userDates: any
-
-watchEffect(async () => {
-    weightData = store.usersWeightHistory
-
-    const mappedWeights = weightData.map((x: any) => {
-        return { x: x.date, y: x.weight, key: x.id }
-    })
-    userWeights = mappedWeights
-    const mappedDates = weightData.map((x: any) => {
-        return x.date
-    })
-    userDates = mappedDates
-})
-
+import 'chart.js/auto'
 
 export default {
     name: 'BarChart',
     components: { Line },
-    data() {
-        return {
-            chartData: {
-                labels: userDates,
-                datasets: [
-                    {
-                        data: userWeights
-                    }
-                ],
-            },
-            chartOptions: {
+    computed: {
+        chartData() {
+            return { labels: this.userDates, datasets: [{ data: this.userWeights }] }
+        },
+        chartOptions() {
+            return {
                 responsive: true
             }
+        },
+        weightData() {
+            return store.usersWeightHistory
+        },
+        userWeights() {
+            return this.weightData.map(function (x: any) {
+                return x.weight
+            })
+        },
+        userDates() {
+            return this.weightData.map(function (x: any) {
+                return x.date
+            })
         }
-    }
+    },
 }
-
-
 </script>
 
 <template>
-    <div v-if="weightData">
-        <!-- <Line id="my-chart-id" :options="chartOptions" :data="chartData" /> -->
-    </div>
-    <div v-else>Loading</div>
+    <Line id="my-chart-id" :options="chartOptions" :data="chartData" />
 </template>

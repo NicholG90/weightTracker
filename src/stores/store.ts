@@ -1,6 +1,8 @@
 import { reactive } from 'vue'
 
 export const store = reactive({
-  session: {},
+  session: null,
   usersWeightHistory: [],
+  userLastWeekWeight: [],
+  userLastWeekWeightChange: 0,
 })

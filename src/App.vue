@@ -1,26 +1,46 @@
 <script setup lang="ts">
-import { watchEffect } from "vue";
+import { watchEffect, ref } from "vue";
 import { RouterLink, RouterView } from 'vue-router'
 import Auth from './components/Auth.vue'
 import { supabase } from './helpers/supabase';
 import { store } from './stores/store'
 
+const drawer = ref()
+const getWeightsDB = async () => {
 
-async function logData() {
-  const { data, error } = await supabase.auth.getSession()
-  console.log(data)
-  console.log(store.session)
+  let d = new Date()
+  d.setDate(d.getDate() - 7);
+
+  const initialDate = ref(d.toISOString().split("T")[0]);
+  const endDate = ref(new Date().toJSON().slice(0, 10));
+
+  const userID = store.session.user.id
+  if (userID) {
+    try {
+      const { data, error } = await supabase
+        .from('weight-tracker')
+        .select('user_id, date, weight, id')
+        .eq('user_id', userID)
+        .gte('date', initialDate.value)
+        .lte('date', endDate.value)
+        .order('date')
+      store.userLastWeekWeight = data
+    }
+    catch (error) {
+      console.log(error)
+    }
+  }
 }
+
 
 watchEffect(async () => {
   const { data, error } = await supabase.auth.getSession()
-
-  if (data != null) {
-    store.session = data
-    console.log(store.session)
+  if (data.session != null) {
+    store.session = data.session
+    getWeightsDB()
   }
-
 })
+
 
 async function signOut() {
   const { error } = await supabase.auth.signOut()
@@ -29,29 +49,33 @@ async function signOut() {
 
 <template>
   <v-app id="inspire">
-    <v-app-bar class="px-3" color="white" flat density="compact">
-      <v-tabs centered color="grey-darken-2">
-        <v-tab>
+    <v-navigation-drawer v-model="drawer">
+      <v-list>
+        <v-list-item>
           <RouterLink to="/">Home</RouterLink>
-        </v-tab>
-        <v-tab>
+        </v-list-item>
+        <v-list-item>
           <RouterLink to="/saveweight">Save Weight</RouterLink>
-        </v-tab>
-        <v-tab>
+        </v-list-item>
+        <v-list-item>
           <RouterLink to="/showweight">Show Weight History</RouterLink>
-        </v-tab>
-        <v-tab>
-          <Auth />
-        </v-tab>
-        <v-tab>
-          <button @click="signOut">Log Out</button>
-        </v-tab>
-      </v-tabs>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
+    <v-app-bar class="px-3" color="primary" flat density="compact">
+      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-app-bar-title>Weight Tracker</v-app-bar-title>
       <v-spacer></v-spacer>
-      <v-avatar class="hidden-sm-and-down" color="grey darken-1 shrink" size="32"></v-avatar>
+      <Auth v-if="store.session === null" />
+      <div v-if="store.session !== null">
+        <v-avatar class="hidden-sm-and-down" color="grey-darken-1" size="32">
+          <!-- <v-img alt="Avatar" :src="store.session.user.user_metadata.avatar_url"></v-img> -->
+        </v-avatar>
+        <button @click="signOut">Log Out</button>
+      </div>
     </v-app-bar>
-    <v-main class="grey lighten-3">
-      <v-container>
+    <v-main class="bg-grey-lighten-3">
+      <v-container class="mt-5 d-flex justify-center">
         <RouterView />
       </v-container>
     </v-main>
